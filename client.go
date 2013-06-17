@@ -27,9 +27,15 @@ func main() {
 
 	var gameId = board.Id
 
-	totalFrames := 1000
+	totalFramesToRender := 60
 
-	for i := 0; i < totalFrames; i++ {
+	var frameRateToMaintain int64 = 60
+
+	// this is the total time to spend on a single frame
+	var maxFrameDurationNanos = 1000000000 / frameRateToMaintain
+
+	for i := 0; i < totalFramesToRender; i++ {
+		frameStart := time.Now()
 		fmt.Println("GameId:", gameId)
 		fmt.Println("PlayerId:", board.MainPlayer.Id)
 		fmt.Println("Frames displayed:", i)
@@ -41,12 +47,20 @@ func main() {
 		}
 		printBoard(board)
 
+		frameDuration := time.Since(frameStart).Nanoseconds()
+		frameSleep := maxFrameDurationNanos - frameDuration - 200000
+		fmt.Println("FrameSleep:", frameSleep)
+		fmt.Println("FrameDuration:", frameDuration)
+		fmt.Println("MaxFrameDuration:", maxFrameDurationNanos)
+		time.Sleep(time.Duration(frameSleep))
+		//time.Sleep(15717280)
+
 	}
 	duration := time.Now().Sub(start)
 
 	fmt.Println(duration)
 
-	fps := (float64(totalFrames) / duration.Seconds())
+	fps := (float64(totalFramesToRender) / duration.Seconds())
 
 	fmt.Println("FPS:", fps)
 
