@@ -26,7 +26,8 @@ func main() {
 	var gameId = board.Id
 
 	for i := 0; i < 1200; i++ {
-		fmt.Println(gameId)
+		fmt.Println("GameId:", gameId)
+		fmt.Println("PlayerId:", board.MainPlayer.Id)
 		fmt.Println(i)
 		board, err = getGame(gameId)
 
