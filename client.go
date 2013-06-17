@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"github.com/telecoda/go-man/models"
 	"net/http"
+	"os"
+	"os/exec"
 	"time"
 )
 
@@ -25,10 +27,12 @@ func main() {
 
 	var gameId = board.Id
 
-	for i := 0; i < 1200; i++ {
+	totalFrames := 1000
+
+	for i := 0; i < totalFrames; i++ {
 		fmt.Println("GameId:", gameId)
 		fmt.Println("PlayerId:", board.MainPlayer.Id)
-		fmt.Println(i)
+		fmt.Println("Frames displayed:", i)
 		board, err = getGame(gameId)
 
 		if err != nil {
@@ -41,6 +45,10 @@ func main() {
 	duration := time.Now().Sub(start)
 
 	fmt.Println(duration)
+
+	fps := (float64(totalFrames) / duration.Seconds())
+
+	fmt.Println("FPS:", fps)
 
 }
 
@@ -112,6 +120,10 @@ func convertJsonToBoard(jsonBody []byte) (*models.GameBoard, error) {
 }
 
 func printBoard(board *models.GameBoard) {
+
+	c := exec.Command("clear")
+	c.Stdout = os.Stdout
+	c.Run()
 
 	fmt.Println("Id:", board.Id)
 	fmt.Println("Name:", board.Name)
