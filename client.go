@@ -14,8 +14,9 @@ func main() {
 
 	fmt.Println("go-man-client starting")
 
+	//displayMenu()
+
 	start := time.Now()
-	//response, err := http.Get("http://localhost:8080/games")
 
 	board, err := startNewGame()
 
@@ -27,7 +28,7 @@ func main() {
 
 	var gameId = board.Id
 
-	totalFramesToRender := 60
+	totalFramesToRender := 600
 
 	var frameRateToMaintain int64 = 60
 
@@ -48,12 +49,11 @@ func main() {
 		printBoard(board)
 
 		frameDuration := time.Since(frameStart).Nanoseconds()
-		frameSleep := maxFrameDurationNanos - frameDuration - 200000
+		frameSleep := maxFrameDurationNanos - frameDuration
 		fmt.Println("FrameSleep:", frameSleep)
 		fmt.Println("FrameDuration:", frameDuration)
 		fmt.Println("MaxFrameDuration:", maxFrameDurationNanos)
 		time.Sleep(time.Duration(frameSleep))
-		//time.Sleep(15717280)
 
 	}
 	duration := time.Now().Sub(start)
@@ -66,6 +66,16 @@ func main() {
 
 }
 
+func displayMenu() {
+
+	fmt.Println("Press P to play")
+	fmt.Println("Press 'esc' to exit")
+
+	var i int
+	fmt.Scan(&i)
+	fmt.Println("read number", i, "from stdin")
+}
+
 func startNewGame() (*models.GameBoard, error) {
 
 	response, err := http.Post("http://localhost:8080/games", "application/json", nil)
@@ -75,7 +85,7 @@ func startNewGame() (*models.GameBoard, error) {
 	}
 
 	// get body
-	jsonBody := make([]byte, 2000)
+	jsonBody := make([]byte, 5000)
 
 	count, err := response.Body.Read(jsonBody)
 
@@ -101,7 +111,7 @@ func getGame(gameId string) (*models.GameBoard, error) {
 	}
 
 	// get body
-	jsonBody := make([]byte, 2000)
+	jsonBody := make([]byte, 5000)
 
 	count, err := response.Body.Read(jsonBody)
 
@@ -144,13 +154,13 @@ func printBoard(board *models.GameBoard) {
 	fmt.Println("Player:", board.MainPlayer.Location)
 
 	// upload board with players location
-	board.BoardCells[board.MainPlayer.Location.Y][board.MainPlayer.Location.X] = byte('M')
+	board.BoardCells[board.MainPlayer.Location.Y][board.MainPlayer.Location.X] = rune('M')
 
 	for _, row := range board.BoardCells {
-		//for _, cell := range row {
-		//fmt.Print(string(cell))
-		//}
-		fmt.Println(string(row))
+		for _, cell := range row {
+			fmt.Print(string(cell))
+		}
+		fmt.Println()
 	}
 
 }
